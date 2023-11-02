@@ -17,8 +17,9 @@ app.post('/login', (req, res) => {
         res.status(401).send('Invalid password')
         return
     }
-    res.send('login successfully')
+    res.send('login seccessfully')
 })
+
 
 app.listen(port, () => {
 console.log(`Example app listening on port ${port}`)
