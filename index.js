@@ -4,8 +4,8 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
+app.get('/hello', (req, res) => {
+    res.send('Hello World!');
 })
 
 app.post('/login', (req, res) => {
@@ -20,6 +20,11 @@ app.post('/login', (req, res) => {
     res.send('login seccessfully')
 })
 
+/// 404 Not Found
+app.use((req, res) => {
+    res.status(404);
+    res.send('<h1>404 Not Found<h1>')
+})
 
 app.listen(port, () => {
 console.log(`Example app listening on port ${port}`)
