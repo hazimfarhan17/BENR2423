@@ -3,9 +3,10 @@ const app = express()
 const port = process.env.PORT || 3000;
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'))
 
-
-
+/*
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://Hazim:987654321@cluster0.hbjf00x.mongodb.net/?retryWrites=true&w=majority";
 
@@ -26,11 +27,18 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    /*
-        client.db("BENR2423").collection("users").then(result => {
-          console.log(result);
-        });
-    */
+/*
+    const database = client.db("BENR2423");
+    const collection = database.collection("users");
+
+    const res = await collection.find({
+       "username":{ $eq: "Apip"},
+       "password":{ $eq: "Apip123"}
+      }).toArray();
+
+      console.log(res);
+      console.log("Found the following records");
+
   }
   finally {
     // Ensures that the client will close when you finish/error
@@ -38,6 +46,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
+*/
 
 app.get('/hello', (req, res) => {
   res.send('Hello World!');
@@ -57,16 +66,25 @@ app.post('/login', (req, res) => {
   res.send('login seccessfully')
 })
 
+// ADD USER TO DATABASE
 app.post('/register', (req, res) => {
-
-  client.db("BENR2423").collection("users").insertOne(
-    {
-      "username": req.body.username,
-      "password": req.body.password
+  client.db("BENR2423").collection("users").find({
+    "username":{$eq:req.body.username}}).toArray().then((result) =>{
+      console.log(result)
+    if (result.length > 0){
+      res.status(400).send('username already exist')
     }
-  );
+    else{
+      client.db("BENR2423").collection("users").insertOne({
+          "username": req.body.username,
+          "password": req.body.password
+        })
+      res.send('register seccessfully')
+    }
+  })
 });
 
+// FIND USER IN DATABASE BY REQUESTING FROM POSTMAN THEN DATABASE WILL SEND RESPONSE
 app.get('/list', (req, res) => {
 
   client.db("BENR2423").collection("users").findOne(
@@ -78,13 +96,26 @@ app.get('/list', (req, res) => {
   res.send('login seccessfully');
 });
 
+//UPDATE USER IN DATABASE
+app.patch('/update', (req, res) => {
+  client.db("BENR2423").collection("users").updateOne({
+      "username": {$eq:req.body.username}
+    },{
+      $set: {"email": req.body.email},
+    }).then((result) =>{
+        console.log(result)
+        res.send('update seccessfully')
+    }
+  );
+});
 
+/*
 /// 404 Not Found
 app.use((req, res) => {
   res.status(404);
   res.send('<h1>404 Not Found<h1>')
 })
-
+*/
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

@@ -9,7 +9,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "dev": "concurrently --kill-others \"node index.js\" \"node database.js\"",
+    "start": "node index.js",
+    "database": "node database.js"
   },
   "author": "",
   "license": "ISC"
