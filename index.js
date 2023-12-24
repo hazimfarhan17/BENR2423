@@ -48,10 +48,6 @@ async function run() {
 run().catch(console.dir);
 */
 
-app.get('/hello', (req, res) => {
-  res.send('Hello World!');
-})
-
 /// confirmation for pass and username
 app.post('/login', (req, res) => {
 
@@ -109,13 +105,16 @@ app.patch('/update', (req, res) => {
   );
 });
 
-/*
+app.get('/hello', (req, res) => {
+  res.send('Hello World!');
+})
+
 /// 404 Not Found
 app.use((req, res) => {
   res.status(404);
   res.send('<h1>404 Not Found<h1>')
 })
-*/
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
