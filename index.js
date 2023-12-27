@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000;
+const bcrypt = require('bcrypt');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -71,9 +72,13 @@ app.post('/register', (req, res) => {
       res.status(400).send('username already exist')
     }
     else{
+      const { username, password } = req.body;
+      console.log(username, password);
+      const hash = bcrypt.hashSync(password, 10);
+      console.log(hash);
       client.db("BENR2423").collection("users").insertOne({
-          "username": req.body.username,
-          "password": req.body.password
+        "username": username,
+        "password": password,
         })
       res.send('register seccessfully')
     }
@@ -104,6 +109,15 @@ app.patch('/update', (req, res) => {
     }
   );
 });
+
+app.post('/reg', (req, res) => {
+  const { username, password } = req.body;
+  console.log(username, password);
+  
+  const hash = bcrypt.hashSync(password, 10);
+  console.log(hash);
+  client.db("BENR2423").collection("users").insertOne({ "username": username, "password": hash })
+})
 
 app.get('/hello', (req, res) => {
   res.send('Hello World!');
